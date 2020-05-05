@@ -97,5 +97,22 @@ def define_generator(image_shape):
 
     return x
 
-g = define_generator(image_shape)
-g.summary()
+generator = define_generator(image_shape)
+generator.summary()
+
+def define_gan(discriminator,generator,image_shape):
+    discriminator.trainable = False
+    input = Input(shape = image_shape)
+    gen_out = generator(input)
+
+    dis_out = discriminator([input,gen_out])
+
+    model = Model(input,[dis_out,gen_out])
+
+    opt = Adam(lr = 0.0002,beta_1 = 0.5)
+    model.compile(optimizer = opt, loss = ['binary_crossentropy','mae'],loss_weights = [1,100])
+    return model
+
+
+gan = define_gan(discriminator,generator,image_shape)
+gan.summary()
