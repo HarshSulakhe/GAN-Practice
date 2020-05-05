@@ -64,3 +64,38 @@ def define_decoder(input_tensor,n_filters,skip_tensor,dropout = True):
         x = Dropout(0.4)(x,training = True)
     x = Activation('relu')(x)
     return x
+
+def define_generator(image_shape):
+
+    init = RandomNormal(stddev = 0.2)
+    real_input = Input(shape = image_shape)
+
+    e1 = define_encoder(real_input,64,batchnorm = False)
+    e2 = define_encoder(e1,128)
+    e3 = define_encoder(e2,256)
+    e4 = define_encoder(e3,512)
+    e5 = define_encoder(e4,512)
+    e6 = define_encoder(e5,512)
+    e7 = define_encoder(e6,512)
+    # e8 = define_encoder(e7,512)
+    b = Conv2D(512,(2,2),strides = 1,padding = 'valid',kernel_initializer = init)(e7)
+    # b = BatchNormalization()(b)
+    b = Activation('relu')(b)
+
+    d1 = define_decoder(b,512,e7)
+    d2 = define_decoder(d1,512,e6)
+    d3 = define_decoder(d2,512,e5)
+    d4 = define_decoder(d3,512,e4,dropout = False)
+    d5 = define_decoder(d4,256,e3,dropout = False)
+    d6 = define_decoder(d5,128,e2,dropout = False)
+    d7 = define_decoder(d6,64,e1,dropout = False)
+
+    out = Conv2DTranspose(3,(4,4),strides = (2,2),padding = 'same',kernel_initializer = init)(d7)
+    out = Activation('tanh')(out)
+
+    x = Model(real_input,out)
+
+    return x
+
+g = define_generator(image_shape)
+g.summary()
