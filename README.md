@@ -9,7 +9,7 @@ My attempt at implementing basic GAN architectures in both Keras and PyTorch.
 # To-Do
 - [X] Implement DCGAN in Keras 
 - [X] Implement DCGAN in PyTorch
-- [ ] Implement Pix2Pix in Keras
+- [X] Implement Pix2Pix in Keras
 - [ ] Implement Pix2Pix in PyTorch
 - [ ] Implement CycleGAN in Keras
 - [ ] Implement CycleGAN in PyTorch
